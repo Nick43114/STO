@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>СТО — запис онлайн</title>
+<meta name="theme-color" content="#14171c">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div id="install-banner" class="install" hidden role="dialog" aria-live="polite">
+  <div class="install__text" id="install-text"></div>
+  <div class="install__ios" id="install-ios" hidden>
+    Натисніть «Поділитися» <span aria-hidden="true">⎙</span>, потім «На початковий екран».
+  </div>
+  <div class="install__actions">
+    <button class="btn btn--small" id="install-btn" type="button"></button>
+    <button class="install__close" id="install-close" type="button" aria-label="Закрити">×</button>
+  </div>
+</div>
+
+<header class="topbar">
+  <a href="#/" class="brand"><img id="brand-logo" alt=""><span id="brand-name"></span></a>
+</header>
+
+<main id="view" tabindex="-1"></main>
+
+<nav class="tabbar" aria-label="Розділи">
+  <a href="#/" data-route="/"><span>🏠</span>Головна</a>
+  <a href="#/services" data-route="/services"><span>🔧</span>Послуги</a>
+  <a href="#/book" data-route="/book"><span>📅</span>Запис</a>
+  <a href="#/faq" data-route="/faq"><span>❓</span>Питання</a>
+  <a href="#/contacts" data-route="/contacts"><span>📍</span>Контакти</a>
+</nav>
+
+<script src="config.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
