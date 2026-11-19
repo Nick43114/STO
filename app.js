@@ -264,8 +264,9 @@
   $("#install-text").textContent = C.install.text;
   $("#install-btn").textContent = C.install.button;
 
+  const alreadyAdded = () => isStandalone() || safeGet(FLAG) === "1";
   function showBanner() {
-    if (isStandalone() || safeGet(FLAG) === "1") { banner.hidden = true; return; }
+    if (alreadyAdded()) { banner.hidden = true; return; }
     const steps = $("#install-steps"), hint = $("#install-hint"), btn = $("#install-btn");
     if (deferredPrompt) {                       // Android / Chrome: системне вікно встановлення
       steps.hidden = true; hint.hidden = true; btn.hidden = false;
@@ -294,7 +295,15 @@
       if (apps && apps.length) { safeSet(FLAG, "1"); banner.hidden = true; }
     }).catch(() => {});
   }
-  showBanner();
+  // iPhone: показуємо одразу. Інші браузери: даємо 2 с, щоб браузер сам повідомив,
+  // що застосунок можна встановити (або що він уже встановлений) — тоді зайвого вікна не буде.
+  if (isIOS) showBanner();
+  else setTimeout(() => { if (banner.hidden && !alreadyAdded()) showBanner(); }, 2000);
+
+  // Якщо клієнт додав застосунок, поки сторінка відкрита — підказка зникає одразу
+  const mq = window.matchMedia("(display-mode: standalone)");
+  const onMode = e => { if (e.matches) { safeSet(FLAG, "1"); banner.hidden = true; } };
+  if (mq.addEventListener) mq.addEventListener("change", onMode);
 
   if ("serviceWorker" in navigator && location.protocol !== "file:") {
     window.addEventListener("load", () => navigator.serviceWorker.register("sw.js").catch(() => {}));
