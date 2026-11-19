@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>СТО — запис онлайн</title>
+<title>АвтоПрестиж — запис онлайн</title>
 <meta name="theme-color" content="#14171c">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icons/icon-192.png">
@@ -15,14 +15,21 @@
 </head>
 <body>
 <div id="install-banner" class="install" hidden role="dialog" aria-live="polite">
-  <div class="install__text" id="install-text"></div>
-  <div class="install__ios" id="install-ios" hidden>
-    Натисніть «Поділитися» <span aria-hidden="true">⎙</span>, потім «На початковий екран».
+  <button class="install__close" id="install-close" type="button" aria-label="Закрити">×</button>
+  <div class="install__head">
+    <img class="install__icon" id="install-icon" alt="">
+    <div>
+      <div class="install__name" id="install-name"></div>
+      <div class="install__text" id="install-text"></div>
+    </div>
   </div>
-  <div class="install__actions">
-    <button class="btn btn--small" id="install-btn" type="button"></button>
-    <button class="install__close" id="install-close" type="button" aria-label="Закрити">×</button>
-  </div>
+  <ol class="install__steps" id="install-steps" hidden>
+    <li>Натисніть <b>Поділитися</b> <span class="install__share" aria-hidden="true">⬆</span> внизу екрана.</li>
+    <li><b>Прокрутіть меню вниз</b> — там пункт <b>«На початковий екран»</b> <span class="muted">(іноді ховається за «Ще» / «Менше»)</span>.</li>
+    <li>Натисніть «Додати».</li>
+  </ol>
+  <p class="install__hint" id="install-hint" hidden></p>
+  <button class="btn btn--small" id="install-btn" type="button"></button>
 </div>
 
 <header class="topbar">
