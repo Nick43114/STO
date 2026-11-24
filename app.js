@@ -118,28 +118,35 @@
   // ---------- Запис ----------
   let B = null;
   function resetBooking(serviceId) {
-    B = { serviceId: serviceId && serviceById(serviceId) ? serviceId : "", date: "", time: null, name: "", phone: "", error: "", done: null };
+    B = { changing: false, serviceId: serviceId && serviceById(serviceId) ? serviceId : "", date: "", time: null, name: "", phone: "", error: "", done: null };
+  }
+  function stepTitle(n, t) { return `<div class="step"><span class="step__n">${n}</span><h2>${t}</h2></div>`; }
+  function pickCard(s, selected) {
+    return `<button type="button" class="pick${selected ? " pick--on" : ""}" data-service="${esc(s.id)}">
+      <span class="pick__icon">${esc(s.icon || "🔧")}</span>
+      <span class="pick__body"><b>${esc(s.name)}</b><small>⏱ ${duration(s.durationMin)} · від ${money(s.price)}</small></span>
+      ${selected ? '<span class="pick__change">Змінити</span>' : ""}</button>`;
   }
   function bookView() {
     if (B.done) return bookDone(B.done);
     const svc = serviceById(B.serviceId);
-    let html = `<h1>Запис</h1><p class="muted">Оберіть послугу, дату й вільну годину.</p>
-      <div class="steps-title">1. Послуга</div>
-      <select class="select" id="b-service"><option value="">— оберіть послугу —</option>
-      ${C.services.map(s => `<option value="${esc(s.id)}"${s.id === B.serviceId ? " selected" : ""}>${esc(s.name)}  (${duration(s.durationMin)})</option>`).join("")}</select>`;
+    let html = `<h1>Запис</h1><p class="muted">Оберіть послугу, дату й вільну годину.</p>` + stepTitle(1, "Послуга");
+    html += svc && !B.changing
+      ? `<div class="pick-list">${pickCard(svc, true)}</div>`
+      : `<div class="pick-list">${C.services.map(x => pickCard(x, x.id === B.serviceId)).join("")}</div>`;
     if (svc) {
-      html += `<div class="steps-title">2. Дата</div><div class="days" id="b-days">${bookableDays().map(x =>
+      html += `${stepTitle(2, "Дата")}<div class="days" id="b-days">${bookableDays().map(x =>
         `<button type="button" class="day${x.key === B.date ? " active" : ""}" data-date="${x.key}"${x.open ? "" : " disabled"}>
           <small>${DAYS[x.d.getDay()]}</small><b>${x.d.getDate()}</b><small>${x.d.toLocaleDateString("uk-UA", { month: "short" }).replace(".", "")}</small></button>`).join("")}</div>`;
     }
     if (svc && B.date) {
       const slots = slotsFor(B.date, svc);
-      html += `<div class="steps-title">3. Година</div>`;
+      html += stepTitle(3, "Година");
       if (!slots.some(s => s.free)) html += `<div class="card muted">На цей день вільного часу немає. Оберіть іншу дату.</div>`;
       else html += `<div class="times">${slots.map(s => `<button type="button" class="time${s.start === B.time ? " active" : ""}" data-time="${s.start}"${s.free ? "" : " disabled"}>${hm(s.start)}</button>`).join("")}</div>`;
     }
     if (svc && B.date && B.time !== null) {
-      html += `<div class="steps-title">4. Ваші дані</div>
+      html += `${stepTitle(4, "Ваші дані")}
         <div class="field"><label for="b-name">Ім'я</label><input class="input" id="b-name" autocomplete="name" value="${esc(B.name)}" placeholder="Ваше ім'я"></div>
         <div class="field"><label for="b-phone">Телефон</label><input class="input" id="b-phone" type="tel" inputmode="tel" autocomplete="tel" value="${esc(B.phone)}" placeholder="+38 0XX XXX XX XX"></div>
         ${B.error ? `<div class="error">${esc(B.error)}</div>` : ""}
@@ -226,9 +233,17 @@
 
   const view = $("#view");
   view.addEventListener("click", e => {
-    const t = e.target.closest("[data-faq],[data-date],[data-time],#b-submit");
+    const t = e.target.closest("[data-faq],[data-service],[data-date],[data-time],#b-submit");
     if (!t) return;
     if (t.dataset.faq !== undefined) { faqState.i = +t.dataset.faq; return rerender(); }
+    if (t.dataset.service) {
+      if (t.dataset.service === B.serviceId && !B.changing) B.changing = true;     // тап по обраній — відкрити список
+      else { B.serviceId = t.dataset.service; B.time = null; B.error = ""; B.changing = false; }
+      rerender();
+      const days = $("#b-days");
+      if (days && !B.changing) days.scrollIntoView({ block: "center", behavior: "smooth" });
+      return;
+    }
     if (t.dataset.date) { B.date = t.dataset.date; B.time = null; B.error = ""; return rerender(); }
     if (t.dataset.time) { B.time = +t.dataset.time; B.error = ""; return rerender(); }
     if (t.id === "b-submit") submitBooking();

@@ -123,3 +123,21 @@ main{padding:16px 16px calc(var(--tab-h) + 24px + env(safe-area-inset-bottom));m
 .summary dt{color:var(--muted)}
 .summary dd{margin:0;font-weight:600}
 .ok-badge{display:inline-flex;width:56px;height:56px;border-radius:50%;background:var(--ok);color:#06210f;font-size:1.8rem;align-items:center;justify-content:center;margin-bottom:10px}
+
+/* Кроки запису й картки послуг */
+.step{display:flex;align-items:center;gap:12px;margin:26px 0 12px}
+.step h2{margin:0;font-size:1.25rem}
+.step__n{width:30px;height:30px;border-radius:50%;background:var(--accent);color:#1a1006;font-weight:800;
+  display:inline-flex;align-items:center;justify-content:center;flex:none}
+.pick-list{display:grid;gap:10px}
+.pick{display:flex;align-items:center;gap:14px;width:100%;text-align:left;color:var(--text);cursor:pointer;
+  background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px 18px;font:inherit;
+  transition:border-color .15s,transform .1s,background .15s}
+.pick:active{transform:scale(.985)}
+.pick:hover{border-color:#47556a}
+.pick__icon{font-size:1.5rem;flex:none}
+.pick__body{flex:1;min-width:0}
+.pick__body b{display:block;font-size:1.05rem;line-height:1.25}
+.pick__body small{display:block;color:var(--muted);font-size:.9rem;margin-top:3px}
+.pick__change{color:var(--accent);font-size:.85rem;font-weight:600;flex:none}
+.pick--on{border:2px solid var(--accent);background:#2a2018;padding:15px 17px}
